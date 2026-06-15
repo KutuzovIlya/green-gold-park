@@ -11,16 +11,16 @@
   /* ============ DATA ============ */
   const ROOMS = {
     villa: [
-      { name: "Вилла на 4 гостей", view: "Сосновый бор", img: "villa-ext-2.jpg", guests: 4, week: 5000, weekend: 8000, feats: ["до 4 гостей", "Wi-Fi", "прокат инвентаря"] },
-      { name: "Вилла на 6 гостей", view: "Лес и озеро", img: "villa-ext-1.jpg", guests: 6, week: 6500, weekend: 9500, feats: ["до 6 гостей", "панорамные окна", "Wi-Fi"] },
-      { name: "Вилла на 6 с террасой", view: "Терраса у леса", img: "terrace.jpg", guests: 6, week: 7000, weekend: 9500, feats: ["до 6 гостей", "терраса", "мангал"] },
-      { name: "Вилла на 8 с террасой", view: "Терраса и лес", img: "villa-ext-3.jpg", guests: 8, week: 8000, weekend: 12000, feats: ["до 8 гостей", "терраса", "для компании"] },
-      { name: "Вилла на 10 гостей", view: "Большая вилла", img: "living-2.jpg", guests: 10, week: 10000, weekend: 15000, feats: ["до 10 гостей", "2 этажа", "гостиная"] },
+      { name: "Вилла на 4 гостей", view: "Сосновый бор", img: "villa-ext-2.jpg", photos: ["villa-ext-2.jpg", "interior-bed-1.jpg", "living-3.jpg", "bath.jpg"], guests: 4, week: 5000, weekend: 8000, feats: ["до 4 гостей", "Wi-Fi", "прокат инвентаря"] },
+      { name: "Вилла на 6 гостей", view: "Лес и озеро", img: "villa-ext-1.jpg", photos: ["villa-ext-1.jpg", "interior-bed-2.jpg", "living-2.jpg", "dining.jpg"], guests: 6, week: 6500, weekend: 9500, feats: ["до 6 гостей", "панорамные окна", "Wi-Fi"] },
+      { name: "Вилла на 6 с террасой", view: "Терраса у леса", img: "terrace.jpg", photos: ["terrace.jpg", "interior-bed-3.jpg", "living-3.jpg", "dining-2.jpg"], guests: 6, week: 7000, weekend: 9500, feats: ["до 6 гостей", "терраса", "мангал"] },
+      { name: "Вилла на 8 с террасой", view: "Терраса и лес", img: "villa-ext-3.jpg", photos: ["villa-ext-3.jpg", "interior-bed-4.jpg", "living-2.jpg", "bath.jpg"], guests: 8, week: 8000, weekend: 12000, feats: ["до 8 гостей", "терраса", "для компании"] },
+      { name: "Вилла на 10 гостей", view: "Большая вилла", img: "living-2.jpg", photos: ["living-2.jpg", "interior-bed-5.jpg", "interior-bed-2.jpg", "dining.jpg"], guests: 10, week: 10000, weekend: 15000, feats: ["до 10 гостей", "2 этажа", "гостиная"] },
     ],
     apart: [
-      { name: "Апартаменты на 4", view: "Вид на озеро", img: "window-view.jpg", guests: 4, week: 3500, weekend: 5000, feats: ["до 4 гостей", "вид на озеро", "Wi-Fi"] },
-      { name: "Апартаменты на 3", view: "Вид на лес", img: "interior-bed-3.jpg", guests: 3, week: 3000, weekend: 3500, feats: ["до 3 гостей", "вид на лес", "Wi-Fi"] },
-      { name: "Апартаменты на 2", view: "Вид на лес", img: "interior-bed-1.jpg", guests: 2, week: 2500, weekend: 3000, feats: ["для пары", "уютный номер", "Wi-Fi"] },
+      { name: "Апартаменты на 4", view: "Вид на озеро", img: "window-view.jpg", photos: ["window-view.jpg", "interior-bed-3.jpg", "living-3.jpg", "bath.jpg"], guests: 4, week: 3500, weekend: 5000, feats: ["до 4 гостей", "вид на озеро", "Wi-Fi"] },
+      { name: "Апартаменты на 3", view: "Вид на лес", img: "interior-bed-3.jpg", photos: ["interior-bed-3.jpg", "living-3.jpg", "window-view.jpg"], guests: 3, week: 3000, weekend: 3500, feats: ["до 3 гостей", "вид на лес", "Wi-Fi"] },
+      { name: "Апартаменты на 2", view: "Вид на лес", img: "interior-bed-1.jpg", photos: ["interior-bed-1.jpg", "bath.jpg", "forest-path.jpg"], guests: 2, week: 2500, weekend: 3000, feats: ["для пары", "уютный номер", "Wi-Fi"] },
     ],
   };
 
@@ -45,13 +45,71 @@
 
   /* ============ RENDER: ROOMS ============ */
   const guestSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>';
+
+  /* Generated schematic floor plan, varies by capacity and terrace. */
+  function planSvg(r) {
+    const beds = Math.max(1, Math.round(r.guests / 2));
+    const terrace = r.feats.some((f) => /террас/i.test(f));
+    const W = 440, H = 300, m = 14;
+    const L = m, T = m, R = W - m, B = H - m;
+    const divX = L + 168, midX = Math.round((divX + R) / 2);
+    const livingB = T + 150;
+    const bandT = terrace ? B - 60 : B;
+    const e = [];
+    const line = (x1, y1, x2, y2) => e.push(`<line class="pdiv" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`);
+    const txt = (x, y, t) => e.push(`<text class="pt" x="${x}" y="${y}" text-anchor="middle">${t}</text>`);
+    const furn = (x, y, w, h) => e.push(`<rect class="pf" x="${x}" y="${y}" width="${w}" height="${h}" rx="4"/>`);
+
+    e.push(`<rect class="pwall" x="${L}" y="${T}" width="${R - L}" height="${B - T}" rx="6"/>`);
+    line(divX, T, divX, B);
+
+    const bh = (B - T) / beds, cx = Math.round((L + divX) / 2);
+    for (let i = 0; i < beds; i++) {
+      const by = T + i * bh;
+      if (i) line(L, by, divX, by);
+      furn(L + 16, by + bh / 2 - 18, 50, 36);
+      e.push(`<line class="pf" x1="${L + 16}" y1="${by + bh / 2 - 7}" x2="${L + 66}" y2="${by + bh / 2 - 7}"/>`);
+      txt(cx, by + bh / 2 + 34, "Спальня");
+    }
+
+    // living
+    line(divX, livingB, R, livingB);
+    furn(divX + 16, livingB - 58, 30, 44);
+    furn(divX + 16, livingB - 22, 86, 14);
+    e.push(`<circle class="pf" cx="${divX + 120}" cy="${livingB - 40}" r="16"/>`);
+    txt(Math.round((divX + R) / 2) + 18, T + 30, "Гостиная");
+    // kitchen + bath
+    line(midX, livingB, midX, bandT);
+    furn(divX + 12, livingB + 12, 96, 16);
+    txt(Math.round((divX + midX) / 2), Math.round((livingB + bandT) / 2) + 4, "Кухня");
+    furn(midX + 16, livingB + 14, 40, 28);
+    txt(Math.round((midX + R) / 2), Math.round((livingB + bandT) / 2) + 4, "С/у");
+    // terrace band
+    if (terrace) {
+      line(divX, bandT, R, bandT);
+      e.push(`<rect class="pterr" x="${divX + 4}" y="${bandT + 4}" width="${R - divX - 8}" height="${B - bandT - 8}" rx="4"/>`);
+      txt(Math.round((divX + R) / 2), Math.round((bandT + B) / 2) + 4, "Терраса");
+    }
+    return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Планировка ${r.name}">${e.join("")}</svg>`;
+  }
+
   function renderRooms(cat) {
     const grid = $("#roomsGrid");
-    grid.innerHTML = ROOMS[cat].map((r) => `
+    grid.innerHTML = ROOMS[cat].map((r) => {
+      const total = r.photos.length + 1;
+      const slides = r.photos.map((p) => `<div class="room__slide"><img src="${IMG}${p}" alt="${r.name}" loading="lazy" /></div>`).join("")
+        + `<div class="room__slide room__slide--plan"><div class="room__plan">${planSvg(r)}</div></div>`;
+      const dots = Array.from({ length: total }, (_, i) => `<button class="room__dot" type="button" data-i="${i}" aria-label="Слайд ${i + 1}"></button>`).join("");
+      return `
       <article class="room reveal">
-        <div class="room__media">
-          <img src="${IMG}${r.img}" alt="${r.name}" loading="lazy" />
+        <div class="room__media" data-carousel>
+          <div class="room__track">${slides}</div>
+          <button class="room__arrow room__arrow--prev" type="button" aria-label="Предыдущее">‹</button>
+          <button class="room__arrow room__arrow--next" type="button" aria-label="Следующее">›</button>
           <span class="room__cap">${guestSvg}до ${r.guests}</span>
+          <span class="room__count"></span>
+          <button class="room__planbtn" type="button">Планировка</button>
+          <div class="room__dots">${dots}</div>
         </div>
         <div class="room__body">
           <h3 class="room__name">${r.name}</h3>
@@ -62,9 +120,45 @@
             <button class="room__book" data-book data-room="${r.name}">Выбрать</button>
           </div>
         </div>
-      </article>`).join("");
+      </article>`;
+    }).join("");
     observeReveal(grid);
     bindBookButtons(grid);
+    initRoomCarousels(grid);
+  }
+
+  function initRoomCarousels(scope) {
+    $$(".room__media", scope).forEach((media) => {
+      const track = $(".room__track", media);
+      const slides = $$(".room__slide", media);
+      const dots = $$(".room__dot", media);
+      const count = $(".room__count", media);
+      const planBtn = $(".room__planbtn", media);
+      const n = slides.length, planIdx = n - 1;
+      let i = 0;
+      function go(idx) {
+        i = (idx + n) % n;
+        track.style.transform = `translateX(${-i * 100}%)`;
+        dots.forEach((d, di) => d.classList.toggle("active", di === i));
+        const onPlan = i === planIdx;
+        count.textContent = onPlan ? "Планировка" : `${i + 1} / ${planIdx}`;
+        planBtn.textContent = onPlan ? "Фото" : "Планировка";
+        planBtn.classList.toggle("is-plan", onPlan);
+      }
+      $(".room__arrow--prev", media).addEventListener("click", () => go(i - 1));
+      $(".room__arrow--next", media).addEventListener("click", () => go(i + 1));
+      dots.forEach((d, di) => d.addEventListener("click", () => go(di)));
+      planBtn.addEventListener("click", () => go(i === planIdx ? 0 : planIdx));
+      let sx = null;
+      track.addEventListener("pointerdown", (e) => { sx = e.clientX; });
+      track.addEventListener("pointerup", (e) => {
+        if (sx === null) return;
+        const dx = e.clientX - sx;
+        if (Math.abs(dx) > 40) go(dx < 0 ? i + 1 : i - 1);
+        sx = null;
+      });
+      go(0);
+    });
   }
 
   $$("#roomTabs .tab").forEach((t) => t.addEventListener("click", () => {
@@ -230,7 +324,7 @@
   let chatStarted = false;
 
   const KB = [
-    { k: ["привет", "здрав", "добр", "хай", "ку "], a: "Здравствуйте! Я Сосна, помощник Грин Голд Парка. Расскажу про размещение, цены, баню и как до нас добраться. О чём хотите узнать?" },
+    { k: ["привет", "здрав", "добр", "хай", "ку "], a: "Здравствуйте! Я администратор Грин Голд Парка. Расскажу про размещение, цены, баню и как до нас добраться. О чём хотите узнать?" },
     { k: ["вилл", "дом", "коттедж"], a: "Виллы вмещают от 4 до 10 гостей. Есть варианты с террасой и мангалом. Будни от 5 000 ₽, выходные от 8 000 ₽ за ночь. Во всех: Wi-Fi и прокат инвентаря." },
     { k: ["апарт", "номер", "пара", "вдвоём", "вдвоем"], a: "Апартаменты на 2, 3 и 4 гостей, с видом на лес или озеро. От 2 500 ₽ за ночь. Отличный вариант для пары или небольшой семьи." },
     { k: ["бан", "парь", "сауна"], a: "Русская баня: на 4 человек от 1 900 ₽/час, на 8 человек от 2 500 ₽/час. Также есть банный чан у воды, от 2 500 ₽/час (минимум 2 часа). Затопить к вашему заезду?" },
@@ -301,7 +395,7 @@
   }
   function startChat() {
     if (chatStarted) return; chatStarted = true;
-    addMsg("Здравствуйте! Я Сосна, помощник Грин Голд Парка 🌲 Помогу с выбором виллы, расскажу про цены, баню и дорогу. Спрашивайте!", "bot");
+    addMsg("Здравствуйте! Я администратор Грин Голд Парка 🌲 Помогу с выбором виллы, расскажу про цены, баню и дорогу. Спрашивайте!", "bot");
     renderChips();
   }
   function openChat() { chat.classList.add("open"); chat.setAttribute("aria-hidden", "false"); chatFab.classList.add("hidden"); startChat(); setTimeout(() => $("#chatInput").focus(), 300); }
