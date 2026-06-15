@@ -347,6 +347,13 @@
   ];
   const CHIPS = ["Цены и размещение", "Что включено", "Про баню", "Как добраться", "Забронировать"];
 
+  /* ===== AI assistant (free Cloudflare Worker proxy), with offline rule fallback ===== */
+  // Worker endpoint. Resort facts + the AI model live server-side in bot-worker/src/index.js.
+  const AI_URL = "https://ggp-bot.ikutuzov1702.workers.dev";
+  const history = []; // only user/assistant turns; system prompt is added by the worker
+  const BOOK_INTENT = /заброниров|бронир|оставить заявк|снять виллу|хочу.*(вилл|апарт|отдох)/i;
+  const aiReady = () => /\.workers\.dev$/.test(new URL(AI_URL).host) && !/WORKER_SUBDOMAIN/.test(AI_URL);
+
   function botReply(text) {
     const q = " " + text.toLowerCase().replace(/ё/g, "е") + " ";
     for (const item of KB) {
@@ -375,14 +382,48 @@
     chatBody.appendChild(el); chatBody.scrollTop = chatBody.scrollHeight;
     return el;
   }
-  function respond(text) {
-    const t = typing();
+  function ruleRespond(text, instant) {
+    const t = instant ? null : typing();
     const r = botReply(text);
-    setTimeout(() => {
-      t.remove();
+    const show = () => {
+      if (t) t.remove();
       addMsg(r.a, "bot");
       if (r.action === "book") setTimeout(() => openBook(""), 600);
-    }, 480 + Math.random() * 360);
+    };
+    if (instant) show(); else setTimeout(show, 480 + Math.random() * 360);
+  }
+
+  function maybeOpenBook(text) {
+    if (BOOK_INTENT.test(text)) setTimeout(() => openBook(""), 700);
+  }
+
+  async function respond(text) {
+    if (!aiReady()) { ruleRespond(text, false); return; }
+    history.push({ role: "user", content: text });
+    if (history.length > 20) history.splice(0, history.length - 20); // keep last 20 turns
+    const t = typing();
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 20000);
+      const res = await fetch(AI_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: history }),
+        signal: ctrl.signal,
+      });
+      clearTimeout(timer);
+      const data = await res.json().catch(() => ({}));
+      const answer = (data && typeof data.text === "string") ? data.text.trim() : "";
+      t.remove();
+      if (!res.ok || !answer) { history.pop(); ruleRespond(text, true); return; }
+      addMsg(answer, "bot");
+      history.push({ role: "assistant", content: answer });
+      maybeOpenBook(text);
+    } catch (err) {
+      t.remove();
+      history.pop();
+      ruleRespond(text, true);
+    }
   }
 
   function renderChips() {
