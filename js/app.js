@@ -167,6 +167,14 @@
     renderRooms(t.dataset.cat);
   }));
 
+  /* ============ SALE: tab switch ============ */
+  $$("#saleTabs .tab").forEach((t) => t.addEventListener("click", () => {
+    const which = t.dataset.sale;
+    $$("#saleTabs .tab").forEach((x) => x.classList.remove("active"));
+    t.classList.add("active");
+    $$("[data-sale-panel]").forEach((p) => p.classList.toggle("is-hidden", p.dataset.salePanel !== which));
+  }));
+
   /* ============ RENDER: ACTIVITIES ============ */
   function renderActivities() {
     const grid = $("#actGrid");

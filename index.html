@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=2" />
+  <link rel="stylesheet" href="css/styles.css?v=5" />
 </head>
 <body>
 
@@ -32,6 +32,7 @@
         <a href="#rooms">Размещение</a>
         <a href="#activities">Развлечения</a>
         <a href="#gallery">Галерея</a>
+        <a href="#sale">Продажа</a>
         <a href="#location">Как добраться</a>
       </div>
       <div class="nav__cta">
@@ -49,6 +50,7 @@
     <a href="#rooms">Размещение</a>
     <a href="#activities">Развлечения</a>
     <a href="#gallery">Галерея</a>
+    <a href="#sale">Продажа</a>
     <a href="#location">Как добраться</a>
     <button class="btn btn--gold" data-book>Забронировать</button>
   </div>
@@ -141,6 +143,75 @@
         <h2 class="section-title serif">Как здесь</h2>
       </div>
       <div class="gallery__grid reveal" id="galleryGrid"></div>
+    </div>
+  </section>
+
+  <!-- SALE -->
+  <section id="sale" class="sale">
+    <div class="container">
+      <div class="head reveal">
+        <div class="eyebrow">Продажа объектов</div>
+        <h2 class="section-title serif">Купить дом или участок <em>в Грин Голд Парк</em></h2>
+        <p class="lead">Готовые дома под ключ и участки в сосновом лесу на берегу озера Волго. Поселитесь у воды или постройте дом мечты на собственной земле в охраняемом парке.</p>
+      </div>
+
+      <div class="tabs reveal" id="saleTabs">
+        <button class="tab active" data-sale="ready">Готовые объекты</button>
+        <button class="tab" data-sale="build">Строительство</button>
+      </div>
+
+      <!-- ГОТОВЫЕ ОБЪЕКТЫ -->
+      <div class="sale__panel" data-sale-panel="ready">
+        <div class="sale__grid">
+          <article class="sale__card reveal">
+            <div class="sale__media"><img src="assets/img/villa-ext-1.jpg" alt="Готовый дом у соснового леса в Грин Голд Парк" loading="lazy" /></div>
+            <div class="sale__body">
+              <h3>Дом у соснового бора</h3>
+              <p>Готовый дом под ключ с панорамными окнами, террасой и видом на лес. Меблирован и подключён ко всем коммуникациям.</p>
+              <div class="sale__row"><span class="sale__price">Цена по запросу</span><a class="btn btn--ghost btn--sm" href="#contacts">Узнать подробнее</a></div>
+            </div>
+          </article>
+          <article class="sale__card reveal" data-d="1">
+            <div class="sale__media"><img src="assets/img/villa-ext-2.jpg" alt="Готовая вилла с террасой в Грин Голд Парк" loading="lazy" /></div>
+            <div class="sale__body">
+              <h3>Вилла с террасой</h3>
+              <p>Просторная вилла для круглогодичного проживания: тёплый контур, кухня, зона отдыха и место под банный чан на участке.</p>
+              <div class="sale__row"><span class="sale__price">Цена по запросу</span><a class="btn btn--ghost btn--sm" href="#contacts">Узнать подробнее</a></div>
+            </div>
+          </article>
+          <article class="sale__card reveal" data-d="2">
+            <div class="sale__media"><img src="assets/img/villa-ext-3.jpg" alt="Готовый дом рядом с озером в Грин Голд Парк" loading="lazy" /></div>
+            <div class="sale__body">
+              <h3>Дом рядом с водой</h3>
+              <p>Дом в нескольких минутах от берега озера. Готов к заселению, рядом инфраструктура парка и общий выход к воде.</p>
+              <div class="sale__row"><span class="sale__price">Цена по запросу</span><a class="btn btn--ghost btn--sm" href="#contacts">Узнать подробнее</a></div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- СТРОИТЕЛЬСТВО -->
+      <div class="sale__panel is-hidden" data-sale-panel="build">
+        <p class="sale__intro reveal">Свободные участки от 6 до 8 соток в границах парка и проект дома под ключ. Покажем расположение, поможем выбрать участок и построим дом по индивидуальному проекту.</p>
+        <div class="sale__shots">
+          <figure class="sale__shot reveal">
+            <img src="assets/img/sale-plan.jpg" alt="Проект дома Грин Голд Парк: спальня, кухня, гостиная, терраса и банный чан" loading="lazy" />
+            <figcaption>Проект дома под ключ: панорамные окна, терраса, зона отдыха и банный чан</figcaption>
+          </figure>
+          <figure class="sale__shot reveal" data-d="1">
+            <img src="assets/img/sale-plots-1.jpg" alt="Расположение участков на продажу на территории Грин Голд Парк, вид сверху" loading="lazy" />
+            <figcaption>Расположение предлагаемых участков на территории парка</figcaption>
+          </figure>
+          <figure class="sale__shot reveal" data-d="2">
+            <img src="assets/img/sale-plots-2.jpg" alt="Участки на продажу с границами и площадью в сотках, Грин Голд Парк" loading="lazy" />
+            <figcaption>Границы и площадь участков, от 6,01 до 7,93 соток</figcaption>
+          </figure>
+        </div>
+        <div class="sale__cta reveal">
+          <a class="btn btn--gold" href="tel:+79100697700">Узнать про участки</a>
+          <a class="btn btn--ghost" href="#contacts">Связаться с нами</a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -272,6 +343,6 @@
     </form>
   </div>
 
-  <script src="js/app.js?v=4"></script>
+  <script src="js/app.js?v=5"></script>
 </body>
 </html>

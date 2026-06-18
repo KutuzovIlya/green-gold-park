@@ -274,6 +274,34 @@ section { padding: clamp(72px, 10vw, 130px) 0; position: relative; }
 @media (max-width: 860px) { .gallery__grid { columns: 2; } }
 @media (max-width: 520px) { .gallery__grid { columns: 1; } }
 
+/* ---------- Sale (продажа объектов) ---------- */
+.sale { background: var(--bg-2); border-top: 1px solid var(--line-soft); }
+.btn--sm { min-height: 42px; padding: 0 20px; font-size: 14px; }
+.is-hidden { display: none; }
+.sale__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+@media (max-width: 920px) { .sale__grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .sale__grid { grid-template-columns: 1fr; } }
+.sale__card { background: var(--surface); border: 1px solid var(--line-soft); border-radius: var(--r-card);
+  overflow: hidden; display: flex; flex-direction: column; transition: transform .3s var(--ease), border-color .3s, box-shadow .3s; }
+.sale__card:hover { transform: translateY(-6px); border-color: rgba(203,163,90,.35); box-shadow: 0 26px 54px rgba(0,0,0,.5); }
+.sale__media { aspect-ratio: 4/3; overflow: hidden; }
+.sale__media img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
+.sale__card:hover .sale__media img { transform: scale(1.05); }
+.sale__body { padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.sale__body h3 { font-family: "Playfair Display", serif; font-size: 21px; }
+.sale__body p { color: var(--muted); font-size: 14.5px; }
+.sale__row { margin-top: auto; padding-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.sale__price { color: var(--gold-soft); font-weight: 600; font-size: 15px; }
+
+.sale__intro { max-width: 70ch; color: var(--muted); font-size: clamp(15px, 1.6vw, 17px); margin-bottom: 30px; }
+.sale__shots { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.sale__shot:first-child { grid-column: 1 / -1; }
+@media (max-width: 720px) { .sale__shots { grid-template-columns: 1fr; } }
+.sale__shot { background: var(--surface); border: 1px solid var(--line-soft); border-radius: var(--r-card); overflow: hidden; }
+.sale__shot img { width: 100%; height: auto; display: block; }
+.sale__shot figcaption { padding: 14px 20px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line-soft); }
+.sale__cta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 32px; }
+
 /* Lightbox */
 .lightbox { position: fixed; inset: 0; z-index: 95; background: rgba(6,9,7,.94); backdrop-filter: blur(6px);
   display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .3s; }
